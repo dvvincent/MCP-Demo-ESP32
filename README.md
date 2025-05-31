@@ -100,36 +100,13 @@ The MCP server provides the following tools:
 
 ## Notes
 
-1. if you setup the mcp config.json file in the .codeium/windsurf directory, the tools should work after windsurf UI loads.
+1. if you setup the mcp config.json file in the .codeium/windsurf directory, the tools should work after windsurf UI loads. you then can use the mcp tools to control the ESP32.
 
-
-## Example Usage
-   
-1. Start the MCP server:
-   ```bash
-   python server/esp32_mcp_server.py
-   ```
-
-2. In another terminal, use the MCP CLI to control the LED:
-   ```bash
-   # Turn on the LED
-   mcp tools run ESP32-LED-Controller turn_led_on
-   
-   # Turn off the LED
-   mcp tools run ESP32-LED-Controller turn_led_off
-   
-   # Get ESP32 status
-   mcp tools run ESP32-LED-Controller get_esp32_status
-   
-   # Set ESP32 IP address
-   mcp tools run ESP32-LED-Controller set_esp32_ip --ip 192.168.1.100 --port 80
-   ```
 
 ## Environment Variables
 
 - `ESP32_IP`: IP address of the ESP32 (default: 192.168.2.150)
 - `ESP32_PORT`: Port of the ESP32 web server (default: 80)
-- `MOCK_MODE`: Set to 'true' to enable mock mode (default: false)
 
 ## Dependencies
 
