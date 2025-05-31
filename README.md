@@ -97,8 +97,14 @@ The MCP server provides the following tools:
 - `restart_device()` - Restarts the ESP32 device
 - `set_esp32_ip(ip, port=80)` - Sets the IP address and port of the ESP32
 
-## Example Usage
 
+## Notes
+
+1. if you setup the mcp config.json file in the .codeium/windsurf directory, the tools should work after windsurf UI loads.
+
+
+## Example Usage
+   
 1. Start the MCP server:
    ```bash
    python server/esp32_mcp_server.py
