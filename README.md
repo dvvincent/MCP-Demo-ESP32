@@ -13,7 +13,7 @@ This project implements a Model Context Protocol (MCP) server that allows you to
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/MCP-Demo-ESP32.git
+   git clone https://github.com/dvvincent/MCP-Demo-ESP32.git
    cd MCP-Demo-ESP32
    ```
 
