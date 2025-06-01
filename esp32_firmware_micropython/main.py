@@ -47,9 +47,33 @@ def modules():
 SSID = "SSID"
 PASSWORD = "PASSWORD"
 
-# Set up the LED pin (built-in LED on most ESP32 boards)
+# Set up the LED with PWM for smooth fading
 led_pin = machine.Pin(2, machine.Pin.OUT)
+led_pwm = machine.PWM(led_pin, freq=1000)  # 1kHz PWM frequency
+led_pwm.duty(0)  # Start with LED off
 led_state = False
+
+def pulse_led(speed=20, min_duty=0, max_duty=1023, times=1):
+    """Pulse the LED with a smooth breathing effect.
+    
+    Args:
+        speed: Controls the speed of the pulse (lower is faster)
+        min_duty: Minimum brightness (0-1023)
+        max_duty: Maximum brightness (0-1023)
+        times: Number of times to repeat the pulse (0 = infinite)
+    """
+    count = 0
+    while times == 0 or count < times:
+        # Fade in
+        for i in range(min_duty, max_duty, speed):
+            led_pwm.duty(i)
+            time.sleep_ms(10)
+        # Fade out
+        for i in range(max_duty, min_duty, -speed):
+            led_pwm.duty(i)
+            time.sleep_ms(10)
+        count += 1
+    led_pwm.duty(0)  # Ensure LED is off at the end
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
@@ -192,23 +216,39 @@ def handle_request(conn):
     
     # Simple request parsing
     elif 'GET /led/on' in request:
-        led_pin.value(1)
+        led_pwm.duty(1023)  # Full brightness
         led_state = True
         response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nLED ON'
     elif 'GET /led/off' in request:
-        led_pin.value(0)
+        led_pwm.duty(0)  # Turn off
         led_state = False
         response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nLED OFF'
+    elif 'GET /led/pulse' in request:
+        # Parse optional parameters
+        params = parse_query_params(request)
+        speed = int(params.get('speed', '20'))
+        min_duty = int(params.get('min', '0'))
+        max_duty = int(params.get('max', '1023'))
+        times = int(params.get('times', '1'))  # Default to 1 pulse
+        
+        # Start a new thread for pulsing so it doesn't block the server
+        import _thread
+        _thread.start_new_thread(pulse_led, (speed, min_duty, max_duty, times))
+        response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nLED PULSING'
     elif request.startswith('GET /led/blink'):
         params = parse_query_params(request)
         count = int(params.get('count', 3))
         interval = int(params.get('interval', 200))
-        for _ in range(count):
-            led_pin.value(1)
-            time.sleep_ms(interval)
-            led_pin.value(0)
-            time.sleep_ms(interval)
-        response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nBlinked {} times with {}ms interval'.format(count, interval)
+        # Start blinking in a new thread to avoid blocking
+        def blink():
+            for _ in range(count):
+                led_pwm.duty(1023)  # Full brightness
+                time.sleep_ms(interval)
+                led_pwm.duty(0)     # Off
+                time.sleep_ms(interval)
+        import _thread
+        _thread.start_new_thread(blink, ())
+        response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nBlinking LED {} times'.format(count)
     elif 'GET /restart' in request:
         response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nRestarting device...'
         conn.send(response.encode('utf-8'))

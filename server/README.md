@@ -31,6 +31,19 @@ Server behavior can be configured using environment variables:
 - `turn_led_on()`: Turn on the LED
 - `turn_led_off()`: Turn off the LED
 - `blink_led(count=3, interval_ms=200)`: Blink the LED a specified number of times with a given interval
+- `pulse_led(speed=20, min_duty=0, max_duty=1023)`: Create a smooth pulsing/breathing effect on the LED
+  - `speed`: Controls the speed of the pulse (lower is faster, default: 20)
+  - `min_duty`: Minimum brightness (0-1023, default: 0)
+  - `max_duty`: Maximum brightness (0-1023, default: 1023)
+
+  Example:
+  ```python
+  # Create a slow, full-range pulse
+  pulse_led(speed=10, min_duty=0, max_duty=1023)
+  
+  # Create a faster pulse with limited brightness range
+  pulse_led(speed=5, min_duty=100, max_duty=800)
+  ```
 
 ### System Information
 

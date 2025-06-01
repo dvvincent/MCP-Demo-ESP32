@@ -49,6 +49,12 @@ A feature-rich MicroPython implementation for ESP32 with a modern web interface,
 - `GET /led/on` - Turn the built-in LED on
 - `GET /led/off` - Turn the built-in LED off
 - `GET /led/blink?count=X&interval=Y` - Blink the LED X times with Y ms interval
+- `GET /led/pulse?speed=X&min=Y&max=Z` - Create a smooth pulsing/breathing effect
+  - `speed`: Controls the speed of the pulse (lower is faster, default: 20)
+  - `min`: Minimum brightness (0-1023, default: 0)
+  - `max`: Maximum brightness (0-1023, default: 1023)
+
+  Example: `http://<device-ip>/led/pulse?speed=10&min=100&max=900`
 
 ### System Information
 - `GET /status` - Get device status (LED state, uptime, IP address)

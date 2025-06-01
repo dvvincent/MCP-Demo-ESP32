@@ -138,6 +138,24 @@ def turn_led_on() -> Dict[str, Any]:
     return call_esp32("led/on")
 
 @mcp.tool()
+def pulse_led(speed: int = 20, min_duty: int = 0, max_duty: int = 1023) -> Dict[str, Any]:
+    """Pulse the LED with a smooth breathing effect.
+    
+    Args:
+        speed: Controls the speed of the pulse (lower is faster, default: 20)
+        min_duty: Minimum brightness (0-1023, default: 0)
+        max_duty: Maximum brightness (0-1023, default: 1023)
+    """
+    logger.info(f"Starting LED pulse with speed={speed}, min={min_duty}, max={max_duty}")
+    
+    if MOCK_MODE:
+        return {"success": True, "message": f"LED pulsing with speed {speed} (mock mode)"}
+    
+    # For now, we'll just do one pulse since the MCP tool doesn't support the times parameter
+    endpoint = f"led/pulse?speed={speed}&min={min_duty}&max={max_duty}&times=1"
+    return call_esp32(endpoint)
+
+@mcp.tool()
 def turn_led_off() -> Dict[str, Any]:
     """Turn off the LED on the ESP32 device."""
     global mock_led_state
