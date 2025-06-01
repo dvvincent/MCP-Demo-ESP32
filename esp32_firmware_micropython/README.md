@@ -1,14 +1,14 @@
 # ESP32 MicroPython Web Interface
 
-A feature-rich MicroPython implementation for ESP32 with a modern web interface, providing LED control, system monitoring, and an interactive REPL terminal.
+A feature-rich MicroPython implementation for ESP32 with a modern web interface, providing LED control and system monitoring capabilities.
 
 ## Features
 
-- **LED Control**: Turn on/off or blink the built-in LED
+- **LED Control**: Turn on/off, blink, or pulse the built-in LED with PWM
 - **System Monitoring**: View memory usage and storage information
-- **Web REPL Terminal**: Execute Python commands directly from the web interface
 - **RESTful API**: Control the device programmatically via HTTP endpoints
-- **Responsive Web UI**: Modern, mobile-friendly interface built with Tailwind CSS
+- **Responsive Web UI**: Modern, mobile-friendly dark mode interface
+- **MCP Integration**: Control via Model Context Protocol tools
 
 ## File Structure
 - `main.py` - Main application with web server and all functionality
@@ -62,9 +62,7 @@ A feature-rich MicroPython implementation for ESP32 with a modern web interface,
 - `GET /storage` - Get filesystem storage information
 - `GET /restart` - Restart the device
 
-### Web REPL Terminal
-- `GET /repl` - Access the interactive Python REPL terminal
-- `GET /execute?cmd=<command>` - Execute a Python command (used by the web interface)
+
 
 ## MCP Integration
 
@@ -81,13 +79,10 @@ This firmware is compatible with the MCP server's control interface, providing t
 - `get_storage_info()` - Get filesystem information
 - `restart_device()` - Restart the ESP32
 
-## Web REPL Features
+## MicroPython Examples
 
-### Special Commands
-- `help()` - Display help information for the web REPL
-- `modules()` - List available MicroPython modules
+You can still use the serial REPL to interact with the ESP32 directly. Here are some useful commands:
 
-### Example Commands
 ```python
 # Basic Python
 2 + 2
