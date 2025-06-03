@@ -23,25 +23,18 @@ def pulse_led(speed=20, min_duty=0, max_duty=1023, times=1):
         speed: Controls the speed of the pulse (lower is faster)
         min_duty: Minimum brightness (0-1023)
         max_duty: Maximum brightness (0-1023)
-        times: Number of times to repeat the pulse (0 = infinite)
+        times: Number of times to repeat the pulse
     """
-    global led_state
-    count = 0
-    while times == 0 or count < times:
+    for _ in range(times):
         # Fade in
-        for i in range(min_duty, max_duty, speed):
-            led_pwm.duty(i)
+        for duty in range(min_duty, max_duty, speed):
+            led_pwm.duty(duty)
             time.sleep_ms(10)
         # Fade out
-        for i in range(max_duty, min_duty, -speed):
-            led_pwm.duty(i)
+        for duty in range(max_duty, min_duty, -speed):
+            led_pwm.duty(duty)
             time.sleep_ms(10)
-        count += 1
-    # Ensure LED returns to previous state
-    if led_state:
-        led_pwm.duty(1023)
-    else:
-        led_pwm.duty(0)
+    led_pwm.duty(0)  # Turn off after pulsing
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
@@ -359,6 +352,14 @@ def handle_request(conn):
         led_pwm.duty(1023)  # Full brightness
         led_state = True
         response = 'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nLED ON'
+    
+    # Add a test endpoint for manual brightness control
+    elif 'GET /led/set' in request:
+        params = parse_query_params(request)
+        brightness = int(params.get('brightness', '512'))  # Default to 50%
+        led_pwm.duty(brightness)
+        led_state = (brightness > 0)
+        response = f'HTTP/1.1 200 OK\nContent-Type: text/plain\n\nLED SET TO {brightness}'
     elif 'GET /led/off' in request:
         led_pwm.duty(0)  # Turn off
         led_state = False
