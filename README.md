@@ -52,18 +52,20 @@ Pulses the LED with a smooth breathing effect.
 pulse_led(speed=20, min_duty=0, max_duty=1023, times=1)
 ```
 
-- `speed`: Controls the speed of the pulse (lower is faster, default: 20)
+- `speed`: Controls the speed of the pulse (lower values = slower, more gradual pulse, default: 20)
+  - Smaller numbers (e.g., 5) = slower, smoother pulse
+  - Larger numbers (e.g., 50) = faster, more abrupt pulse
 - `min_duty`: Minimum brightness (0-1023, default: 0)
 - `max_duty`: Maximum brightness (0-1023, default: 1023)
 - `times`: Number of times to repeat the pulse (default: 1)
 
 Example:
 ```python
-# Pulse 3 times with default speed and brightness
-pulse_led(times=3)
+# Slow, smooth pulse (speed=5) that repeats 3 times
+pulse_led(speed=5, times=3)
 
-# Fast pulse (speed=10) with dimmer minimum brightness
-pulse_led(speed=10, min_duty=100, max_duty=1023, times=5)
+# Faster pulse (speed=30) with dimmer minimum brightness
+pulse_led(speed=30, min_duty=100, max_duty=1023, times=5)
 ```
 
 ## MCP Configuration
