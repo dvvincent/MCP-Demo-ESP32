@@ -36,6 +36,36 @@ This project implements a Model Context Protocol (MCP) server that allows you to
    pip install -r requirements.txt
    ```
 
+## Features
+
+- Control an LED on an ESP32 device over WiFi
+- Smooth LED pulsing with adjustable speed and brightness
+- Web interface for manual control
+- MCP server for programmatic control
+
+### LED Control Functions
+
+#### Pulse LED
+Pulses the LED with a smooth breathing effect.
+
+```python
+pulse_led(speed=20, min_duty=0, max_duty=1023, times=1)
+```
+
+- `speed`: Controls the speed of the pulse (lower is faster, default: 20)
+- `min_duty`: Minimum brightness (0-1023, default: 0)
+- `max_duty`: Maximum brightness (0-1023, default: 1023)
+- `times`: Number of times to repeat the pulse (default: 1)
+
+Example:
+```python
+# Pulse 3 times with default speed and brightness
+pulse_led(times=3)
+
+# Fast pulse (speed=10) with dimmer minimum brightness
+pulse_led(speed=10, min_duty=100, max_duty=1023, times=5)
+```
+
 ## MCP Configuration
 
 To integrate this ESP32 controller with Windsurf, add the following entry to your `mcp_config.json` file (typically located at `~/.codeium/windsurf/mcp_config.json`):
