@@ -2,8 +2,9 @@ from fastmcp import FastMCP
 import requests
 import logging
 from typing import Optional, Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import os
+import urllib.parse
 
 # Configure logging
 logging.basicConfig(
@@ -201,6 +202,59 @@ def set_esp32_ip(ip: str, port: int = 80) -> Dict[str, Any]:
         "success": True,
         "message": f"ESP32 IP address set to {ESP32_IP}:{ESP32_PORT}"
     }
+
+
+@mcp.tool()
+def flash_morse_code(
+    message: str = Field(..., description="Text message to flash in Morse code"),
+    dot_duration: int = Field(100, description="Duration of a dot in milliseconds (default: 100)"),
+    dash_duration: int = Field(300, description="Duration of a dash in milliseconds (default: 300)"),
+    element_gap: int = Field(100, description="Gap between elements in milliseconds (default: 100)"),
+    letter_gap: int = Field(300, description="Gap between letters in milliseconds (default: 300)"),
+    word_gap: int = Field(700, description="Gap between words in milliseconds (default: 700)")
+) -> Dict[str, Any]:
+    """Flash a message in Morse code using the ESP32's LED.
+    
+    Args:
+        message: The text message to flash in Morse code
+        dot_duration: Duration of a dot in milliseconds (default: 100)
+        dash_duration: Duration of a dash in milliseconds (default: 300)
+        element_gap: Gap between elements of the same letter (default: 100)
+        letter_gap: Gap between letters (default: 300)
+        word_gap: Gap between words (default: 700)
+    """
+    logger.info(f"Flashing Morse code: {message}")
+    
+    if MOCK_MODE:
+        return {
+            "success": True, 
+            "message": f"Would flash Morse code: {message} (mock mode)",
+            "dot_duration": dot_duration,
+            "dash_duration": dash_duration,
+            "element_gap": element_gap,
+            "letter_gap": letter_gap,
+            "word_gap": word_gap
+        }
+    
+    try:
+        # Encode the message for URL
+        encoded_message = urllib.parse.quote_plus(message)
+        
+        # Build the endpoint URL with parameters
+        endpoint = (
+            f"morse?message={encoded_message}"
+            f"&dot={dot_duration}"
+            f"&dash={dash_duration}"
+            f"&element_gap={element_gap}"
+            f"&letter_gap={letter_gap}"
+            f"&word_gap={word_gap}"
+        )
+        
+        # Call the ESP32
+        return call_esp32(endpoint)
+    except Exception as e:
+        logger.error(f"Error flashing Morse code: {str(e)}")
+        return {"success": False, "error": str(e)}
 
 
 if __name__ == "__main__":
