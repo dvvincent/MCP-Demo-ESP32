@@ -5,8 +5,8 @@ import _thread
 import collections
 
 # WiFi credentials
-SSID = "SSID"
-PASSWORD = "PASSWORD"
+SSID = "NETGEAR25"
+PASSWORD = "hotdogfingers"
 
 # Command queue for LED operations
 cmd_queue = collections.deque((), 20)  # Max 20 commands in queue
@@ -324,9 +324,9 @@ def start_web_server():
                     
                     # Create JSON response
                     storage_json = {
-                        "total": total_space,
-                        "used": used_space,
-                        "free": free_space,
+                        "total_bytes": total_space,
+                        "used_bytes": used_space,
+                        "free_bytes": free_space,
                         "used_percent": round((used_space / total_space) * 100, 1) if total_space > 0 else 0
                     }
                     

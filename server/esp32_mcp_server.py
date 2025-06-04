@@ -93,19 +93,14 @@ def get_storage_info() -> Dict[str, Any]:
                 size_bytes /= 1024.0
             return f"{size_bytes:.1f} TB"
         
-        # Format the response for better readability
+        # Format the response to match ESP32's format
         return {
             "success": True,
             "storage": {
-                "total": format_bytes(storage_data['total_bytes']),
-                "used": format_bytes(storage_data['used_bytes']),
-                "free": format_bytes(storage_data['free_bytes']),
-                "used_percent": f"{storage_data['used_percent']}%",
-                "details": {
-                    "block_size": f"{storage_data['block_size']:,} bytes",
-                    "total_blocks": storage_data['total_blocks'],
-                    "free_blocks": storage_data['free_blocks']
-                }
+                "total_bytes": storage_data['total_bytes'],
+                "used_bytes": storage_data['used_bytes'],
+                "free_bytes": storage_data['free_bytes'],
+                "used_percent": storage_data['used_percent']
             }
         }
     except Exception as e:
