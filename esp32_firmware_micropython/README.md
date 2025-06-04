@@ -8,7 +8,6 @@ A feature-rich MicroPython implementation for ESP32 with a modern web interface,
 - **Morse Code**: Flash messages in Morse code using the built-in LED
 - **System Monitoring**: View memory usage and storage information
 - **RESTful API**: Control the device programmatically via HTTP endpoints
-- **Responsive Web UI**: Modern, mobile-friendly dark mode interface
 - **MCP Integration**: Control via Model Context Protocol tools
 
 ## File Structure
@@ -42,9 +41,9 @@ A feature-rich MicroPython implementation for ESP32 with a modern web interface,
 3. **Connect to WiFi**
    - The device will automatically connect to the WiFi network specified in `main.py`
    - Check the serial output for the assigned IP address
-   - Access the web interface at `http://<device-ip>`
+   - Access the HTTP API at `http://<device-ip>/endpoint`
 
-## Web Interface Endpoints
+## HTTP API Endpoints
 
 ### LED Control
 - `GET /led/on` - Turn the built-in LED on
@@ -123,7 +122,7 @@ Edit the following variables in `main.py` to customize the device:
 - **WiFi**: Credentials are configured in `main.py`
 - **LED**: Uses the built-in LED on GPIO2 by default
 - **File Transfer**: Use `ampy` or `rshell` for file operations
-- **REPL Access**: Available via serial connection or the web interface
+- **REPL Access**: Available via serial connection
 - **Memory**: The device has limited memory; complex operations may require memory management
 
 ## Troubleshooting
