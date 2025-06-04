@@ -31,10 +31,11 @@ Server behavior can be configured using environment variables:
 - `turn_led_on()`: Turn on the LED
 - `turn_led_off()`: Turn off the LED
 - `blink_led(count=3, interval_ms=200)`: Blink the LED a specified number of times with a given interval
-- `pulse_led(speed=20, min_duty=0, max_duty=1023)`: Create a smooth pulsing/breathing effect on the LED
+- `pulse_led(speed=20, min_duty=0, max_duty=1023, times=1)`: Create a smooth pulsing/breathing effect on the LED
   - `speed`: Controls the speed of the pulse (lower is faster, default: 20)
   - `min_duty`: Minimum brightness (0-1023, default: 0)
   - `max_duty`: Maximum brightness (0-1023, default: 1023)
+  - `times`: Number of times to repeat the pulse (default: 1)
 
   Example:
   ```python
@@ -43,6 +44,30 @@ Server behavior can be configured using environment variables:
   
   # Create a faster pulse with limited brightness range
   pulse_led(speed=5, min_duty=100, max_duty=800)
+  ```
+
+- `flash_morse_code(message, dot_duration=100, dash_duration=300, element_gap=100, letter_gap=300, word_gap=700)`: Flash a message in Morse code using the LED
+  - `message`: The text message to flash in Morse code
+  - `dot_duration`: Duration of a dot in milliseconds (default: 100)
+  - `dash_duration`: Duration of a dash in milliseconds (default: 300)
+  - `element_gap`: Gap between elements of the same letter (default: 100)
+  - `letter_gap`: Gap between letters (default: 300)
+  - `word_gap`: Gap between words (default: 700)
+
+  Example:
+  ```python
+  # Flash SOS in Morse code
+  flash_morse_code("SOS")
+  
+  # Flash a message with custom timing
+  flash_morse_code(
+      "HELLO WORLD",
+      dot_duration=150,
+      dash_duration=450,
+      element_gap=150,
+      letter_gap=450,
+      word_gap=1050
+  )
   ```
 
 ### System Information

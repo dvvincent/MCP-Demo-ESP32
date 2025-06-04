@@ -40,6 +40,7 @@ This project implements a Model Context Protocol (MCP) server that allows you to
 
 - Control an LED on an ESP32 device over WiFi
 - Smooth LED pulsing with adjustable speed and brightness
+- Morse code flashing for transmitting messages via the LED
 - Web interface for manual control
 - MCP server for programmatic control
 
@@ -123,6 +124,7 @@ The MCP server provides the following tools:
 - `turn_led_on()` - Turns on the LED on the ESP32
 - `turn_led_off()` - Turns off the LED on the ESP32
 - `blink_led(count=3, interval_ms=200)` - Blinks the LED a specified number of times with given interval
+- `flash_morse_code(message, dot_duration=100, dash_duration=300, element_gap=100, letter_gap=300, word_gap=700)` - Flashes a message in Morse code using the LED
 - `get_esp32_status()` - Gets the current status of the ESP32 (LED state, uptime, IP)
 - `get_memory_usage()` - Gets detailed memory usage statistics
 - `get_storage_info()` - Gets filesystem storage information

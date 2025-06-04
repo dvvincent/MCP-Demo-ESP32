@@ -5,6 +5,7 @@ A feature-rich MicroPython implementation for ESP32 with a modern web interface,
 ## Features
 
 - **LED Control**: Turn on/off, blink, or pulse the built-in LED with PWM
+- **Morse Code**: Flash messages in Morse code using the built-in LED
 - **System Monitoring**: View memory usage and storage information
 - **RESTful API**: Control the device programmatically via HTTP endpoints
 - **Responsive Web UI**: Modern, mobile-friendly dark mode interface
@@ -55,6 +56,17 @@ A feature-rich MicroPython implementation for ESP32 with a modern web interface,
   - `max`: Maximum brightness (0-1023, default: 1023)
 
   Example: `http://<device-ip>/led/pulse?speed=10&min=100&max=900`
+
+### Morse Code
+- `GET /morse?message=X` - Flash the message in Morse code using the LED
+  - `message`: The text to flash in Morse code (URL-encoded)
+  - `dot`: Duration of a dot in milliseconds (default: 100)
+  - `dash`: Duration of a dash in milliseconds (default: 300)
+  - `element_gap`: Gap between elements in milliseconds (default: 100)
+  - `letter_gap`: Gap between letters in milliseconds (default: 300)
+  - `word_gap`: Gap between words in milliseconds (default: 700)
+
+  Example: `http://<device-ip>/morse?message=SOS&dot=100&dash=300`
 
 ### System Information
 - `GET /status` - Get device status (LED state, uptime, IP address)
