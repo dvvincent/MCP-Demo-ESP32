@@ -5,13 +5,34 @@ import _thread
 import collections
 
 # WiFi credentials
-SSID = "NETGEAR25"
-PASSWORD = "hotdogfingers"
+SSID = "SSID"
+PASSWORD = "PASSWORD"
 
 # Command queue for LED operations
 cmd_queue = collections.deque((), 20)  # Max 20 commands in queue
 queue_lock = _thread.allocate_lock()
 queue_running = False
+
+# Thread tracking
+active_threads = set()
+thread_counter = 0
+
+def create_thread(target, args=()):
+    """Wrapper around _thread.start_new_thread to track active threads"""
+    global thread_counter
+    thread_id = thread_counter
+    thread_counter += 1
+    
+    def thread_wrapper():
+        active_threads.add(thread_id)
+        try:
+            target(*args)
+        finally:
+            if thread_id in active_threads:
+                active_threads.remove(thread_id)
+    
+    _thread.start_new_thread(thread_wrapper, ())
+    return thread_id
 
 # Morse code dictionary
 MORSE_CODE_DICT = {
@@ -378,6 +399,9 @@ def start_web_server():
                         queue_length = len(cmd_queue)
                         queue_is_running = queue_running
                     
+                    # Get thread information
+                    thread_count = len(active_threads)
+                    
                     # Create JSON response with system status
                     status_json = {
                         "uptime_seconds": time.time(),
@@ -385,7 +409,11 @@ def start_web_server():
                         "queue_running": queue_is_running,
                         "led_state": led_state,
                         "wifi_connected": network.WLAN(network.STA_IF).isconnected(),
-                        "ip_address": network.WLAN(network.STA_IF).ifconfig()[0]
+                        "ip_address": network.WLAN(network.STA_IF).ifconfig()[0],
+                        "threads": {
+                            "active": thread_count,
+                            "total_created": thread_counter
+                        }
                     }
                     
                     json_response = json.dumps(status_json)
@@ -405,8 +433,8 @@ print("Starting ESP32...")
 ip = connect_wifi()
 
 # Start the command queue processor thread
-print("Starting command queue processor...")
-_thread.start_new_thread(process_queue_thread, ())
+print("# Start the command processor in a new thread")
+create_thread(process_queue_thread)
 
 # Wait for the queue processor to start
 time.sleep(0.5)

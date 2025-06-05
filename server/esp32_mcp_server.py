@@ -175,11 +175,29 @@ def get_esp32_status() -> Dict[str, Any]:
                 "led_state": "ON" if mock_led_state else "OFF",
                 "mode": "MOCK",
                 "ip_address": ESP32_IP,
-                "port": ESP32_PORT
+                "port": ESP32_PORT,
+                "threads": {
+                    "active": 1,
+                    "total_created": 1
+                }
             }
         }
     
-    return call_esp32("status")
+    # Get the status from the ESP32
+    status = call_esp32("status")
+    
+    if status.get("success", False) and "threads" in status.get("status", {}):
+        # If we already have thread info in the response, just return it
+        return status
+        
+    # If no thread info in the response, add it
+    if "status" in status:
+        status["status"]["threads"] = {
+            "active": 1,  # At least the main thread is running
+            "total_created": 1
+        }
+    
+    return status
 
 class IPConfig(BaseModel):
     ip: str
