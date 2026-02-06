@@ -1,8 +1,8 @@
 from fastmcp import FastMCP
 import requests
 import logging
-from typing import Optional, Dict, Any
-from pydantic import BaseModel, Field
+from typing import Dict, Any
+from pydantic import Field
 import os
 import urllib.parse
 
@@ -183,25 +183,24 @@ def get_esp32_status() -> Dict[str, Any]:
             }
         }
     
-    # Get the status from the ESP32
-    status = call_esp32("status")
-    
-    if status.get("success", False) and "threads" in status.get("status", {}):
-        # If we already have thread info in the response, just return it
-        return status
-        
-    # If no thread info in the response, add it
-    if "status" in status:
-        status["status"]["threads"] = {
-            "active": 1,  # At least the main thread is running
-            "total_created": 1
-        }
-    
-    return status
+    try:
+        response = requests.get(
+            f"http://{ESP32_IP}:{ESP32_PORT}/status",
+            timeout=5
+        )
+        response.raise_for_status()
+        status = response.json()
 
-class IPConfig(BaseModel):
-    ip: str
-    port: Optional[int] = 80
+        if "threads" not in status:
+            status["threads"] = {
+                "active": 1,
+                "total_created": 1
+            }
+
+        return {"success": True, "status": status}
+    except Exception as e:
+        logger.error(f"Error getting ESP32 status: {str(e)}")
+        return {"success": False, "error": str(e)}
 
 @mcp.tool()
 def set_esp32_ip(ip: str, port: int = 80) -> Dict[str, Any]:
